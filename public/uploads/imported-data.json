@@ -1,0 +1,43 @@
+{
+  "residences": [
+    {
+      "id": "R-001",
+      "name": "Résidence Alpha",
+      "address": "12 rue des Lilas",
+      "gcp": "GCP-001",
+      "lotId": "LOT-LotA",
+      "lotName": "Lot A",
+      "score": 0,
+      "status": "À contrôler",
+      "lastControl": "Aucun contrôle"
+    },
+    {
+      "id": "R-002",
+      "name": "Résidence Beta",
+      "address": "8 avenue de la Paix",
+      "gcp": "GCP-002",
+      "lotId": "LOT-LotB",
+      "lotName": "Lot B",
+      "score": 0,
+      "status": "À contrôler",
+      "lastControl": "Aucun contrôle"
+    }
+  ],
+  "lots": [
+    {
+      "id": "LOTLotA",
+      "name": "Lot A",
+      "residences": [
+        "R-001"
+      ]
+    },
+    {
+      "id": "LOTLotB",
+      "name": "Lot B",
+      "residences": [
+        "R-002"
+      ]
+    }
+  ],
+  "importedAt": "2026-07-01T23:08:38.746Z"
+}
