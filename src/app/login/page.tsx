@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Lock, ShieldCheck } from "lucide-react";
 
 const VALID_EMAIL = "admin@gcp-pro.fr";
 const VALID_PASSWORD = "demo1234";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState(VALID_EMAIL);
   const [password, setPassword] = useState(VALID_PASSWORD);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage.getItem("gcp-pro-auth") === "true") {
+      router.replace("/");
+    }
+  }, [router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +29,7 @@ export default function LoginPage() {
     }
 
     window.localStorage.setItem("gcp-pro-auth", "true");
-    window.location.assign("/");
+    router.replace("/");
   };
 
   return (

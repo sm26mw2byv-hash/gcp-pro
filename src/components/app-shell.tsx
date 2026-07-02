@@ -16,15 +16,28 @@ const navItems = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const stored = window.localStorage.getItem("gcp-pro-auth");
     setIsAuthenticated(stored === "true");
   }, []);
 
   useEffect(() => {
-    if (pathname !== "/login" && !isAuthenticated) {
+    if (isAuthenticated === null) {
+      return;
+    }
+
+    if (pathname === "/login") {
+      if (isAuthenticated) {
+        router.replace("/");
+      }
+      return;
+    }
+
+    if (!isAuthenticated) {
       router.replace("/login");
     }
   }, [pathname, isAuthenticated, router]);
@@ -33,7 +46,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  if (!isAuthenticated) {
+  if (isAuthenticated === null || !isAuthenticated) {
     return null;
   }
 
