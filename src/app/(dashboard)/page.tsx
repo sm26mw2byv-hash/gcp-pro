@@ -1,29 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Building2, ClipboardCheck, FileText, Sparkles, TrendingUp } from "lucide-react";
-import { fetchAppData } from "@/lib/app-data";
-import type { Residence } from "@/lib/app-data";
-import { ExcelImporter } from "@/components/excel-importer";
+import { residencesData } from "@/lib/residences";
 
 export default function DashboardPage() {
-  const [residences, setResidences] = useState<Residence[]>([]);
-  const [sourceMessage, setSourceMessage] = useState("Chargement des données métier…");
-
-  const handleImportedData = (data: { residences: Residence[]; message?: string }) => {
-    setResidences(data.residences);
-    setSourceMessage(data.message ?? "Données métier importées avec succès.");
-  };
-
-  useEffect(() => {
-    fetchAppData()
-      .then((data) => {
-        setResidences(data.residences);
-        setSourceMessage(data.message);
-      })
-      .catch(() => setSourceMessage("Les données ne sont pas encore disponibles."));
-  }, []);
+  const residences = residencesData;
 
   const scoreAverage = useMemo(() => {
     if (!residences.length) return 0;
@@ -49,10 +32,6 @@ export default function DashboardPage() {
           </Link>
         </div>
       </section>
-
-      <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-        <ExcelImporter onImported={handleImportedData} />
-      </div>
 
       <section className="grid gap-4 md:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-5">
@@ -86,24 +65,18 @@ export default function DashboardPage() {
               <Link href="/residences" className="text-sm font-medium text-blue-600">Voir tout</Link>
             </div>
             <div className="space-y-3">
-              {residences.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-                  Aucune résidence importée. Veuillez importer le fichier Patrimoine GCP.
-                </div>
-              ) : (
-                residences.map((residence) => (
-                  <div key={residence.id} className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <div>
-                      <p className="font-medium text-slate-900">{residence.name}</p>
-                      <p className="text-sm text-slate-500">{residence.address}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-blue-600">{residence.score}%</p>
-                      <p className="text-sm text-slate-500">{residence.status}</p>
-                    </div>
+              {residences.map((residence) => (
+                <div key={residence.id} className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div>
+                    <p className="font-medium text-slate-900">{residence.name}</p>
+                    <p className="text-sm text-slate-500">{residence.address}</p>
                   </div>
-                ))
-              )}
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-blue-600">{residence.score}%</p>
+                    <p className="text-sm text-slate-500">{residence.status}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

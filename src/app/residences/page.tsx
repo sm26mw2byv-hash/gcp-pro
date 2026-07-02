@@ -1,32 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import QRCode from "qrcode";
 import { Building2, Copy, QrCode } from "lucide-react";
-import { fetchAppData } from "@/lib/app-data";
-import type { Residence } from "@/lib/app-data";
+import { residencesData } from "@/lib/residences";
 
 export default function ResidencesPage() {
-  const [residences, setResidences] = useState<Residence[]>([]);
-  const [message, setMessage] = useState("Chargement des résidences…");
+  const residences = residencesData;
   const [qrUrl, setQrUrl] = useState<string>("");
-
-  useEffect(() => {
-    fetchAppData()
-      .then((data) => {
-        setResidences(data.residences);
-        setMessage(
-          data.residences.length
-            ? "Résidences importées depuis Excel."
-            : "Aucune résidence importée. Veuillez importer le fichier Patrimoine GCP."
-        );
-      })
-      .catch(() => {
-        setResidences([]);
-        setMessage("Aucune résidence importée. Veuillez importer le fichier Patrimoine GCP.");
-      });
-  }, []);
 
   const generateQr = async (id: string) => {
     const dataUrl = await QRCode.toDataURL(`residence:${id}`);
@@ -38,15 +20,9 @@ export default function ResidencesPage() {
       <div>
         <p className="text-sm uppercase tracking-[0.3em] text-blue-600">Résidences</p>
         <h2 className="text-2xl font-semibold text-slate-900">Liste des résidences</h2>
-        <p className="mt-2 text-sm text-slate-600">{message}</p>
+        <p className="mt-2 text-sm text-slate-600">Résidences intégrées localement depuis le fichier Patrimoine GCP.</p>
       </div>
 
-      {residences.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
-          <p className="text-lg font-semibold text-slate-900">Aucune résidence importée.</p>
-          <p className="mt-2 text-sm text-slate-600">Veuillez importer le fichier Patrimoine GCP.</p>
-        </div>
-      ) : (
       <div className="grid gap-4 lg:grid-cols-2">
         {residences.map((residence) => (
           <div key={residence.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -91,7 +67,6 @@ export default function ResidencesPage() {
           </div>
         ))}
       </div>
-      )}
     </div>
   );
 }

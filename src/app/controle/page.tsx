@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { jsPDF } from "jspdf";
 import { AlertTriangle, CheckCircle2, FileText, ImagePlus } from "lucide-react";
-import { fetchAppData } from "@/lib/app-data";
-import type { Residence } from "@/lib/app-data";
 import { inspectionSections, type InspectionStatus } from "@/lib/mock-data";
+import { residencesData } from "@/lib/residences";
 
 const statusLabels: Record<InspectionStatus, string> = {
   conforme: "Conforme",
@@ -21,8 +20,8 @@ function getOverallStatus(totalScore: number) {
 }
 
 export default function ControlPage() {
-  const [residences, setResidences] = useState<Residence[]>([]);
-  const [selectedResidence, setSelectedResidence] = useState("");
+  const residences = residencesData;
+  const [selectedResidence, setSelectedResidence] = useState(residences[0]?.id ?? "");
   const [answers, setAnswers] = useState<Record<string, InspectionStatus>>(
     Object.fromEntries(inspectionSections.flatMap((section) => section.criteria.map((criterion) => [criterion.id, "conforme"])))
   );
@@ -30,17 +29,6 @@ export default function ControlPage() {
   const [photos, setPhotos] = useState<Record<string, string[]>>({});
   const [reprises, setReprises] = useState<string[]>(["Vérifier les joints du hall"]);
   const [repriseInput, setRepriseInput] = useState("");
-
-  useEffect(() => {
-    fetchAppData()
-      .then((data) => {
-        setResidences(data.residences);
-        if (data.residences.length) {
-          setSelectedResidence((current) => current || data.residences[0].id);
-        }
-      })
-      .catch(() => setResidences([]));
-  }, []);
 
   const sectionResults = useMemo(() => {
     return inspectionSections.map((section) => {
@@ -104,22 +92,6 @@ export default function ControlPage() {
       sendRelanceEmail();
     }
   };
-
-  if (!residences.length) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-blue-600">Nouveau contrôle</p>
-          <h2 className="text-2xl font-semibold text-slate-900">Contrôle qualité NOV’HABITAT</h2>
-        </div>
-
-        <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
-          <p className="text-lg font-semibold text-slate-900">Aucune résidence importée.</p>
-          <p className="mt-2 text-sm text-slate-600">Veuillez importer le fichier Patrimoine GCP pour accéder au contrôle.</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">

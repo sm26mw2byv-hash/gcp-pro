@@ -17,7 +17,7 @@ export default function HistoriquePage() {
           <History className="h-6 w-6" />
         </div>
         <p className="mt-3 text-lg font-semibold text-slate-900">Aucun historique disponible.</p>
-        <p className="mt-2 text-sm text-slate-600">Les contrôles apparaîtront ici après import du fichier Excel Patrimoine GCP.</p>
+        <p className="mt-2 text-sm text-slate-600">Les contrôles apparaîtront ici dès que la base métier locale sera enrichie.</p>
       </div>
     </div>
   );

@@ -1,18 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { BarChart3, TrendingDown, TrendingUp } from "lucide-react";
-import { fetchAppData } from "@/lib/app-data";
-import type { Residence } from "@/lib/app-data";
+import { residencesData } from "@/lib/residences";
 
 export default function StatistiquesPage() {
-  const [residences, setResidences] = useState<Residence[]>([]);
-
-  useEffect(() => {
-    fetchAppData()
-      .then((data) => setResidences(data.residences))
-      .catch(() => setResidences([]));
-  }, []);
+  const residences = residencesData;
 
   const averageScore = useMemo(() => {
     if (!residences.length) return 0;
@@ -46,9 +39,6 @@ export default function StatistiquesPage() {
 
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-lg font-semibold text-slate-900">Évolution</h3>
-        {residences.length === 0 ? (
-          <p className="text-sm text-slate-600">Aucune donnée de contrôle n’est encore disponible. Importez un fichier Excel pour alimenter les statistiques.</p>
-        ) : (
         <div className="space-y-3">
           {[10, 12, 14, 16, 18].map((value, index) => (
             <div key={index} className="space-y-2">
@@ -62,7 +52,6 @@ export default function StatistiquesPage() {
             </div>
           ))}
         </div>
-        )}
       </div>
     </div>
   );
